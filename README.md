@@ -2,6 +2,9 @@
 
 This project builds upon the [WatchStats repository](https://github.com/krpouncy/WatchStats) to track and analyze Overwatch (OW) games. It extends the original functionality by introducing new models and components tailored specifically for OW2.
 
+**Important Note: Only 1920x1080 screen resolution for screenshot images has been tested. It might not work as effectively on other monitor resolutions.**
+![example1](https://github.com/user-attachments/assets/ecfce2f9-7040-4406-a418-d94135f0e5e3)
+
 ---
 
 ## **How to Install**
