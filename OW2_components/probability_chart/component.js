@@ -5,19 +5,25 @@
 let winChart = null;
 
 // Load Chart.js from CDN and initialize chart
-const scriptElement = document.createElement('script');
-scriptElement.src = "https://cdn.jsdelivr.net/npm/chart.js";
-scriptElement.onload = () => {
-    console.log('Chart.js has been loaded');
-    initChart();
-};
-document.head.appendChild(scriptElement);
+document.addEventListener('DOMContentLoaded', () => {
+    const scriptElement = document.createElement('script');
+    scriptElement.src = "https://cdn.jsdelivr.net/npm/chart.js";
+    scriptElement.onload = () => {
+        if (initChart()){
+            console.log("Chart.js loaded and initialized successfully.");
+        }
+        else {
+            console.warn("Chart.js initialization failed.");
+        }
+    };
+    document.head.appendChild(scriptElement);
+});
 
 function initChart() {
   const ctx = document.getElementById('win-chart');
   if (!ctx) {
     console.warn("No #win-chart element found. Skipping chart init.");
-    return;
+    return false;
   }
   winChart = new Chart(ctx.getContext('2d'), {
   type: 'line',
@@ -132,6 +138,7 @@ function initChart() {
   },
 });
 
+  return true;
 }
 
 /* ==========================
@@ -147,6 +154,10 @@ socket.on('update_chart', (win_probability) => {
     winChart.data.labels.push(`Event ${winChart.data.labels.length + 1}`);
     winChart.data.datasets[0].data.push(probability);
     winChart.update();
+    console.log('Chart successfully updated.');
+  }
+  else{
+    console.log('Chart update failed.');
   }
 });
 

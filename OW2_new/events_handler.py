@@ -27,14 +27,15 @@ class UserEventsHandler(EventsHandlerInterface):
         #  This event is called after 'get_stats_and_details' and 'predict_probability' methods return the output
         #  The call source is the 'process_screenshot' method in 'game_manager.py'
         if event_name == "game_details":
-            # calculate the team_status and update the player status
-            stats, game_details = payload
-            time, team_composition, win_probability = game_details
+            if payload and payload[1][0]: # Ensure that the field 'time' exists in payload
+                # calculate the team_status and update the player status
+                stats, game_details = payload
+                time, team_composition, win_probability = game_details
 
-            team_status = self.calculate_team_statuses(stats)
-            self.update_player_status(socket_object, team_status, team_composition)
+                team_status = self.calculate_team_statuses(stats)
+                self.update_player_status(socket_object, team_status, team_composition)
 
-            socket_object.emit('team_rules', self.get_rules_table(team_composition, team_status, win_probability))
+                socket_object.emit('team_rules', self.get_rules_table(team_composition, team_status, win_probability))
 
         # This event is called when the game outcome is set by the user in the browser
         # The call source is the 'set_game_outcome' method in 'routes.py'
@@ -45,7 +46,7 @@ class UserEventsHandler(EventsHandlerInterface):
         # This event is called directly after the implemented 'predict_probability' method. It returns the output
         # The call source is the 'predict_probability' method in 'game_manager.py'
         # The 'predict_probability' method is created by the user in the 'predictor.py' file
-        if event_name == 'game_prediction':
+        if event_name == 'game_prediction' and payload:
             # This event is called when an output is received from user implemented 'predict_probability' method
             # update the chart with the new probability
             socket_object.emit('update_chart', payload)

@@ -183,27 +183,6 @@ function getGradientColor(proportion) {
 
 
 socket.on('performance_update', (data) => {
-    console.log('Premium synergy logic triggered on performance_update.');
-
-    let latestWinProbability = null;
-
-    // Safely access winChart and its data structure
-    if (winChart && winChart.data && winChart.data.datasets && winChart.data.datasets.length > 0) {
-        const chartData = winChart.data.datasets[0].data;
-        if (chartData && chartData.length > 0) {
-            const latestWinProbPercent = parseFloat(chartData[chartData.length - 1]);
-            if (!isNaN(latestWinProbPercent)) {
-                latestWinProbability = latestWinProbPercent / 100.0;
-            }
-        }
-    }
-
-    if (latestWinProbability === null) {
-        console.warn('Unable to retrieve latest win probability.');
-    }
-});
-
-socket.on('performance_update', (data) => {
     console.log('Received performance_update:', data);
 
     // Update the performance rows
