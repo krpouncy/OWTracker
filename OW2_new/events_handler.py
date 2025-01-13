@@ -3,7 +3,7 @@ import os
 import pandas as pd
 from flask import jsonify
 
-from models import EventsHandlerInterface
+from models import EventsHandlerInterface, HandlerEvent
 from app.core.state import app_state
 
 class UserEventsHandler(EventsHandlerInterface):
@@ -14,20 +14,20 @@ class UserEventsHandler(EventsHandlerInterface):
         rules_df = pd.read_csv("models/OW2_new/team_rules.csv")
         self.preprocessed_rules_df = self.preprocess_rules_at_startup(rules_df)
 
-    def handle_event(self, socket_object, event_name, payload = None):
+    def handle_event(self, socket_object, event_name, payload):
         """Handle the given event with the given payload."""
         print(f"Handling event {event_name} with payload: {payload}")
 
         # 'page_load' event is called when the current HTML page is loaded
-        if event_name == 'page_load':
+        if event_name == HandlerEvent.PAGE_LOAD:
             # use the preprocessed rules to send the rules to the client
             payload = self.preprocessed_rules_df.to_dict(orient='records')
             socket_object.emit("update_hidden_rules_div", payload)
 
         #  This event is called after 'get_stats_and_details' and 'predict_probability' methods return the output
         #  The call source is the 'process_screenshot' method in 'game_manager.py'
-        if event_name == "game_details":
-            if payload and payload[1][0]: # Ensure that the field 'time' exists in payload
+        if event_name == HandlerEvent.GAME_DETAILS and payload:
+            if payload[1][0]: # Ensure that the field 'time' exists in payload
                 # calculate the team_status and update the player status
                 stats, game_details = payload
                 time, team_composition, win_probability = game_details
@@ -39,14 +39,14 @@ class UserEventsHandler(EventsHandlerInterface):
 
         # This event is called when the game outcome is set by the user in the browser
         # The call source is the 'set_game_outcome' method in 'routes.py'
-        if event_name == 'game_outcome_set':
+        if event_name == HandlerEvent.GAME_OUTCOME_SET:
             # reset the chart
             socket_object.emit('reset_chart')
 
         # This event is called directly after the implemented 'predict_probability' method. It returns the output
         # The call source is the 'predict_probability' method in 'game_manager.py'
         # The 'predict_probability' method is created by the user in the 'predictor.py' file
-        if event_name == 'game_prediction' and payload:
+        if event_name == HandlerEvent.GAME_PREDICTION and payload:
             # This event is called when an output is received from user implemented 'predict_probability' method
             # update the chart with the new probability
             socket_object.emit('update_chart', payload)
