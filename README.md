@@ -1,5 +1,7 @@
 # **OW DS Project**
 
+> **Note:** This project was developed using Overwatch 2 data from 2023-2024. Due to numerous game updates (e.g., perk updates), the predictive model presented here is **likely outdated** and may no longer reflect current gameplay dynamics accurately.
+
 This project builds upon the [WatchStats repository](https://github.com/krpouncy/WatchStats) to track and analyze Overwatch (OW) games. It extends the original functionality by introducing new models and components tailored specifically for OW2.
 
 **Important Note: Only 1920x1080 screen resolution for screenshot images has been tested. It might not work as effectively on other monitor resolutions.**
